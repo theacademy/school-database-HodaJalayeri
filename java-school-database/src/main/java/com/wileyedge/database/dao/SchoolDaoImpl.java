@@ -108,7 +108,8 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 1: Write a query to add the student Robert Dylan to the student table.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO student (fName, lName)\n" +
+                "VALUES ('Robert', 'Dylan');";
 
         // YOUR CODE ENDS HERE
          System.out.println(jdbcTemplate.update(sql));
@@ -120,7 +121,11 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 2: Write a query to add Robert Dylan to CS148.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO course_student (student_id, course_id)\n" +
+                "VALUES (\n" +
+                "    (SELECT sid FROM student WHERE fName = 'Robert' AND lName = 'Dylan'),\n" +
+                "    (SELECT cid FROM course WHERE courseCode = 'CS148')\n" +
+                ");";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
