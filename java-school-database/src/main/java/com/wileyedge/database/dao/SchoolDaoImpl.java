@@ -36,7 +36,7 @@ public class SchoolDaoImpl implements SchoolDao {
         // sorted by last name.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "SELECT student.fName, student.lName FROM student ORDER BY lName; ";
 
         // YOUR CODE ENDS HERE
 
@@ -49,7 +49,14 @@ public class SchoolDaoImpl implements SchoolDao {
         // for all courses in the Computer Science department.
         // YOUR CODE STARTS HERE
 
-         String sql = "";
+         String sql = "SELECT\n" +
+                 "\tcourse.courseCode,\n" +
+                 "\tcourse.courseDesc\n" +
+                 "\tFROM\n" +
+                 "\tcourse\n" +
+                 "\tJOIN teacher ON course.teacherId = teacher.tid\n" +
+                 "\tWHERE\n" +
+                 "\tteacher.dept = 'Computer Science';";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new CourseMapper());
@@ -61,7 +68,9 @@ public class SchoolDaoImpl implements SchoolDao {
         //  Name the aggregate field `teacherCount`.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "SELECT dept, COUNT(*) As teacherCount\n" +
+                "FROM teacher\n" +
+                "GROUP BY dept;";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new TeacherCountMapper());
@@ -74,7 +83,15 @@ public class SchoolDaoImpl implements SchoolDao {
         // Name the aggregate field `numStudents`.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "SELECT\n" +
+                "  course.courseCode,\n" +
+                "  course.courseDesc,\n" +
+                "  COUNT(course_student.student_id) AS numStudents\n" +
+                "FROM\n" +
+                "  course\n" +
+                "  LEFT JOIN course_student ON course.cid = course_student.course_id\n" +
+                "GROUP BY\n" +
+                "  course.courseCode, course.courseDesc;";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new StudentCountMapper());
@@ -87,7 +104,8 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 1: Write a query to add the student Robert Dylan to the student table.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO student (fName, lName)\n" +
+                "VALUES ('Robert', 'Dylan');";
 
         // YOUR CODE ENDS HERE
          System.out.println(jdbcTemplate.update(sql));
@@ -99,7 +117,11 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 2: Write a query to add Robert Dylan to CS148.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO course_student (student_id, course_id)\n" +
+                "VALUES (\n" +
+                "    (SELECT sid FROM student WHERE fName = 'Robert' AND lName = 'Dylan'),\n" +
+                "    (SELECT cid FROM course WHERE courseCode = 'CS148')\n" +
+                ");";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -110,7 +132,9 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to change the course description for course CS305 to "Advanced Python with Flask".
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "UPDATE course\n" +
+                "SET courseDesc = 'Advanced Python with Flask'\n" +
+                "WHERE courseCode = 'CS305';";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -121,7 +145,12 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to remove David Mitchell as a teacher.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "DELETE FROM teacher\n" +
+                "WHERE tid IN (\n" +
+                "    SELECT tid\n" +
+                "    FROM teacher\n" +
+                "    WHERE tFName = 'David' AND tLName = 'Mitchell'\n" +
+                ")";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
