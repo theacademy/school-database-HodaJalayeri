@@ -68,13 +68,9 @@ public class SchoolDaoImpl implements SchoolDao {
         //  Name the aggregate field `teacherCount`.
         // YOUR CODE STARTS HERE
 
-        String sql = "SELECT\n" +
-                "  dept,\n" +
-                "  COUNT(*) \n" +
-                "FROM\n" +
-                "  teacher\n" +
-                "GROUP BY\n" +
-                "  dept;";
+        String sql = "SELECT dept, COUNT(*) As teacherCount\n" +
+                "FROM teacher\n" +
+                "GROUP BY dept;";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new TeacherCountMapper());
@@ -90,7 +86,7 @@ public class SchoolDaoImpl implements SchoolDao {
         String sql = "SELECT\n" +
                 "  course.courseCode,\n" +
                 "  course.courseDesc,\n" +
-                "  COUNT(course_student.student_id) AS studentCount\n" +
+                "  COUNT(course_student.student_id) AS numStudents\n" +
                 "FROM\n" +
                 "  course\n" +
                 "  LEFT JOIN course_student ON course.cid = course_student.course_id\n" +
@@ -136,7 +132,9 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to change the course description for course CS305 to "Advanced Python with Flask".
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "UPDATE course\n" +
+                "SET courseDesc = 'Advanced Python with Flask'\n" +
+                "WHERE courseCode = 'CS305';";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -147,7 +145,12 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to remove David Mitchell as a teacher.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "DELETE FROM teacher\n" +
+                "WHERE tid IN (\n" +
+                "    SELECT tid\n" +
+                "    FROM teacher\n" +
+                "    WHERE tFName = 'David' AND tLName = 'Mitchell'\n" +
+                ")";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);

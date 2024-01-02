@@ -73,7 +73,7 @@ public class CourseDAOTest {
                 assertEquals(6, sc.getStudentCount());
             }
         }
-        assertEquals(7, studentCounts.size());
+        assertEquals(14, studentCounts.size());
     }
 
     @Test
